@@ -113,40 +113,26 @@ export async function getFileContent(owner, repo, path) {
   return { content, sha: response.data.sha, isImage };
 }
 
-export async function saveFile(owner, repo, path, content, sha = null, message = 'Update note') {
-  const octokit = getOctokit();
-  
-  // For images, we need to ensure the content is properly formatted
-  const isImage = !path.endsWith('.md');
-  const encodedContent = isImage ? content : btoa(content);
-  
+export async function saveFile(owner, repo, path, content, sha = null, message = 'Update file') {
   try {
-    // First, try to get the file to see if it exists
-    let currentSha = sha;
-    try {
-      const response = await octokit.repos.getContent({ owner, repo, path });
-      currentSha = response.data.sha;
-    } catch (error) {
-      if (error.status !== 404) {
-        throw error;
-      }
-      // File doesn't exist, that's fine - we'll create it
-    }
-    
-    const params = {
+    const octokit = new Octokit({
+      auth: localStorage.getItem('github_token')
+    });
+
+    // Convert content to base64 if it's not already
+    const base64Content = content.startsWith('data:') ? content.split(',')[1] : btoa(content);
+
+    // Try to save the file directly
+    const response = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner,
       repo,
       path,
       message,
-      content: encodedContent,
-    };
-    
-    if (currentSha) {
-      params.sha = currentSha;
-    }
-    
-    await octokit.repos.createOrUpdateFileContents(params);
-    console.log(`File ${path} saved successfully`);
+      content: base64Content,
+      sha: sha || undefined // Only include sha if it's not null
+    });
+
+    return response.data;
   } catch (error) {
     console.error('Error saving file:', error);
     throw error;
