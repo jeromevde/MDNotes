@@ -27,10 +27,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Todo
 
-- list notes correctly
-- handle image shown nicely in wysiwyg
-- nicer speedier wysiwyg
+- handle image shown
+
 - user authentication instead of app token
 
-- reverse index builder and partial builder on push
-- lookup feature
+- reverse index builder and partial builder on push then the lookup feature
