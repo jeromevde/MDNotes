@@ -31,7 +31,8 @@
           return;
         }
         const files = await getFiles(this.owner, this.repo);
-        this.files = files.filter(file => file.type === 'file' && file.name.endsWith('.md'));
+        console.log(files)
+        this.files = files
       } catch (error) {
         console.error(error);
         alert('Error loading files: ' + error.message);

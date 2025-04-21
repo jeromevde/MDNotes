@@ -92,7 +92,6 @@ export async function getFiles(owner, repo, path = 'notes') {
         }
       })
     );
-    
     // Filter out null values and return valid notes
     return validNotes.filter(note => note !== null);
   } catch (error) {
