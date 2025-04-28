@@ -144,3 +144,43 @@ export async function saveFile(owner, repo, path, content, sha = null, message =
     throw error;
   }
 }
+
+/**
+ * Fetch an image file as a Blob from the GitHub API using the user's token.
+ * @param {string} owner - GitHub repo owner
+ * @param {string} repo - GitHub repo name
+ * @param {string} path - Path to the image file in the repo
+ * @returns {Promise<Blob>} - The image as a Blob
+ */
+export async function fetchGithubImageBlob(owner, repo, path) {
+  const token = localStorage.getItem('github_token');
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const response = await axios.get(url, {
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3.raw'
+    },
+    responseType: 'blob'
+  });
+  return response.data;
+}
+
+/**
+ * Delete a file from the GitHub repo using the API.
+ * @param {string} owner - GitHub repo owner
+ * @param {string} repo - GitHub repo name
+ * @param {string} path - Path to the file in the repo
+ * @param {string} sha - SHA of the file to delete
+ * @param {string} message - Commit message
+ */
+export async function deleteFile(owner, repo, path, sha, message = 'Delete unused image') {
+  const octokit = getOctokit();
+  const response = await octokit.repos.deleteFile({
+    owner,
+    repo,
+    path,
+    sha,
+    message
+  });
+  return response.data;
+}
