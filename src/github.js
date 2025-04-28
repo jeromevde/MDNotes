@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import axios from 'axios';
 
 export function getOctokit() {
   const token = localStorage.getItem('github_token');
@@ -104,13 +105,18 @@ export async function getFiles(owner, repo, path = 'notes') {
 }
 
 export async function getFileContent(owner, repo, path) {
-  const octokit = getOctokit();
-  const response = await octokit.repos.getContent({ owner, repo, path });
-  
-  // Check if the file is an image
-  const isImage = !path.endsWith('.md');
-  const content = isImage ? response.data.content : atob(response.data.content);
-  return { content, sha: response.data.sha, isImage };
+  try {
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      headers: {
+        'Authorization': `token ${localStorage.getItem('github_token')}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    return { content: atob(response.data.content), sha: response.data.sha };
+  } catch (error) {
+    console.error('Error getting file content:', error);
+    throw error;
+  }
 }
 
 export async function saveFile(owner, repo, path, content, sha = null, message = 'Update file') {

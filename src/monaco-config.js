@@ -21,7 +21,6 @@ const markdownTokenProvider = {
       [/`{3}.*$/, 'code'],
       [/`[^`]*`/, 'code'],
       [/\[.*?\]\(.*?\)/, 'link'],
-      [/!\[.*?\]\(.*?\)/, 'image'],
       [/[*_]{1,2}.*?[*_]{1,2}/, 'emphasis'],
       [/~~.*?~~/, 'strikethrough'],
     ]
