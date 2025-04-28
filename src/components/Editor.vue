@@ -1,6 +1,5 @@
 <template>
   <div class="editor-container">
-    <h2>{{ isNew ? 'New Note' : 'Edit Note' }}</h2>
     <div class="editor-layout">
       <div class="editor-section">
         <div class="tiptap-toolbar" v-if="editor">
