@@ -17,3 +17,18 @@ Another thing, it would be nice to have a way to tag notes, so that they can be 
 Simplicity should be key, the app should rely on the browser's local storage to store the current state of the app, so that it can be restored when the user comes back to the app
 
 Simplicity is key, so use as few packages as possible, and try to use only vanilla javascript and html. If you need to use a package, make sure it is lightweight and does not add too much bloat to the app.
+
+## Usage
+
+1. Open index.html in a browser.
+2. Click Settings and provide GitHub owner, repo, branch (default main) and a Personal Access Token with contents read/write.
+3. Use New to create a note, type in the editor. Paste images directly; they will be referenced and uploaded on Save into an assets/ folder next to the note.
+4. Toggle Split/Preview/Source to change the layout; notes are auto-saved on inactivity and when the tab loses focus.
+5. Search filters by filename locally and by contents if the reverse index exists.
+6. Tags: add YAML front matter to your notes, for example:
+
+---
+tags: [work, ideas]
+---
+
+The GitHub Action builds a reverse index at .search/index.json on every push to main. Tag filtering and fast search use this file when present.

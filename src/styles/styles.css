@@ -1,0 +1,63 @@
+/* Minimal, clean layout */
+:root{
+  --bg: #0f172a;
+  --panel: #111827;
+  --panel-2: #0b1220;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #4f46e5;
+  --border: #27324a;
+  --danger: #ef4444;
+  --ok: #22c55e;
+}
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+
+.app-shell{display:grid;grid-template-columns:280px 1fr;grid-template-rows:auto 1fr auto;height:100%}
+.header{grid-column:1/-1;display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-bottom:1px solid var(--border);background:var(--panel)}
+.header .spacer{flex:1}
+.header input[type="search"]{width:420px;max-width:50vw;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:.4rem .6rem;border-radius:6px;outline:none}
+.header .status{font-size:.85em;color:var(--muted)}
+
+.sidebar{border-right:1px solid var(--border);background:var(--panel);overflow:auto}
+.sidebar .explorer-toolbar{display:flex;gap:.4rem;padding:.5rem;border-bottom:1px solid var(--border)}
+.sidebar button{background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:.35rem .55rem;border-radius:6px;cursor:pointer}
+.sidebar button:hover{border-color:#3a4b71}
+
+.file-tree{list-style:none;margin:0;padding:.5rem}
+.file-tree li{padding:.25rem .35rem;border-radius:4px;cursor:pointer;display:flex;justify-content:space-between;gap:.5rem}
+.file-tree li.active{background:#1b2540}
+.file-tree li .meta{color:var(--muted);font-size:.85em}
+
+.main{display:grid;grid-template-rows:auto 1fr;}
+.editor-toolbar{display:flex;gap:.4rem;padding:.5rem;border-bottom:1px solid var(--border);background:var(--panel)}
+.editor-toolbar .spacer{flex:1}
+.editor-toolbar button,.editor-toolbar select{background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:.35rem .55rem;border-radius:6px;cursor:pointer}
+.editor-toolbar button.primary{background:var(--accent);border-color:transparent}
+.editor-toolbar button:disabled{opacity:.5;cursor:not-allowed}
+.editor-toolbar .dirty{color:var(--muted)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.editor, .preview{height:100%;}
+.editor textarea{width:100%;height:100%;border:0;outline:none;padding:1rem;background:transparent;color:var(--text);font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+.preview{padding:1rem;overflow:auto}
+.preview h1,h2,h3{border-bottom:1px solid var(--border);padding-bottom:.25rem}
+.preview img{max-width:100%}
+
+.tag-filter{display:flex;gap:.4rem;flex-wrap:wrap}
+.tag{background:#24314f;color:#cbd5e1;border:1px solid var(--border);padding:.2rem .5rem;border-radius:999px;font-size:.85em}
+
+.toast{position:fixed;bottom:16px;right:16px;background:#111827;border:1px solid var(--border);padding:.6rem .8rem;border-radius:8px;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:1000}
+.toast.ok{border-color: #2e8b57}
+.toast.err{border-color: #7f1d1d}
+
+.hidden{display:none}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(2,6,23,.7);display:flex;align-items:center;justify-content:center;z-index:2000}
+.modal-panel{background:#0b1020;border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:16px;max-width:560px;width:min(560px,94vw);color:var(--text)}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.modal-grid label{display:flex;flex-direction:column;gap:.25rem}
+.modal-grid input{background:#0b1220;border:1px solid var(--border);color:var(--text);padding:.4rem .6rem;border-radius:6px}
+.modal-grid .row{grid-column:1 / -1}

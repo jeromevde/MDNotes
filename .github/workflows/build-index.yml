@@ -1,0 +1,55 @@
+name: Build reverse index
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build reverse index
+        run: |
+          set -e
+          mkdir -p .search
+          node -e '
+          const fs = require("fs");
+          const walk = (dir) => fs.readdirSync(dir,{withFileTypes:true}).flatMap(d=>{
+            const p = dir+"/"+d.name; if (d.isDirectory()) return walk(p); else return [p];
+          });
+          const files = walk(".").filter(f=>f.endsWith(".md") && !f.startsWith("./.git"));
+          const idx = { tokens: {}, tags: {}, fileTags: {} };
+          const add = (tok, path) => { (idx.tokens[tok] || (idx.tokens[tok]=[])).push(path); };
+          for (const f of files){
+            const content = fs.readFileSync(f,"utf8");
+            const path = f.replace(/^\.\//,'');
+            // tags: YAML-ish front-matter like: ---\ntags: [a,b]\n---
+            const m = content.match(/^---[\s\S]*?---/);
+            if (m){
+              const tagLine = m[0].match(/tags\s*:\s*\[([^\]]*)\]/i);
+              if (tagLine){
+                const tags = tagLine[1].split(/\s*,\s*/).map(s=>s.trim()).filter(Boolean);
+                idx.fileTags[path] = tags;
+                for (const t of tags){ (idx.tags[t]||(idx.tags[t]=[])).push(path); }
+              }
+            }
+            const tokens = content.toLowerCase().split(/[^a-z0-9#]+/).filter(Boolean);
+            const uniq = Array.from(new Set(tokens));
+            for (const t of uniq) add(t, path);
+          }
+          fs.writeFileSync(".search/index.json", JSON.stringify(idx));
+          '
+      - name: Commit index
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git add .search/index.json
+            git commit -m "chore: update reverse index"
+            git push
+          fi
